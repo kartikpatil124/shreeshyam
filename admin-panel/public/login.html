@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShyamSteel - Secure Admin Login</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+
+<body class="login-bg">
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <div class="login-container">
+        <div class="login-box card interactive">
+            <h1 class="login-logo"><i class="ri-shield-keyhole-line"></i> Shyam<span>Steel</span></h1>
+            <p class="login-subtitle">Secure Administration Portal</p>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Admin Email</label>
+                    <input type="email" id="email" required placeholder="name@shyamsteel.com">
+                </div>
+                <div class="form-group">
+                    <label>Security Password</label>
+                    <input type="password" id="password" required placeholder="••••••••">
+                </div>
+                <div id="errorMsg" style="color:var(--danger); font-size:0.9rem; margin-bottom:1rem; font-weight:500;">
+                </div>
+                <button type="submit" class="btn btn-primary w-100"><i class="ri-login-circle-line"></i>
+                    Authenticate</button>
+            </form>
+            <p style="margin-top: 1.5rem; text-align:center;">
+                <a href="/" style="color:var(--text-muted); text-decoration:none; font-size:0.9rem;">
+                    <i class="ri-arrow-left-line"></i> Back to Home
+                </a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Custom Cursor
+        document.addEventListener('mousemove', e => {
+            const cursor = document.querySelector('.cursor');
+            const follower = document.querySelector('.cursor-follower');
+            if (cursor) { cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px'; }
+            if (follower) { follower.style.left = e.clientX + 'px'; follower.style.top = e.clientY + 'px'; }
+        });
+
+        // If already logged in, redirect to home
+        (async () => {
+            try {
+                const res = await fetch('/admin/verify-session', { credentials: 'include' });
+                const data = await res.json();
+                if (data.authenticated) window.location.href = '/';
+            } catch (e) { }
+        })();
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="ri-loader-4-line ri-spin"></i> Authenticating...';
+            btn.disabled = true;
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const res = await fetch('/admin/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    // Redirect to Home Page after successful login
+                    window.location.href = '/';
+                } else {
+                    document.getElementById('errorMsg').innerText = data.message || 'Invalid Email or Password';
+                    btn.innerHTML = originalHTML;
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                document.getElementById('errorMsg').innerText = 'Server connection failed';
+                btn.innerHTML = originalHTML;
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+
+</html>

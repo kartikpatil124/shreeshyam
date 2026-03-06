@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Control Center</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;700;900&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Dashboard-specific: push content below the fixed global navbar */
+        .global-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2.5rem;
+            background: rgba(5, 5, 5, 0.85);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .global-navbar .nav-brand a {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .global-navbar .nav-brand span {
+            color: var(--primary);
+        }
+
+        .global-navbar .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .global-navbar .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+
+        .global-navbar .nav-links a:hover,
+        .global-navbar .nav-links a.active-link {
+            color: var(--primary);
+        }
+
+        .global-navbar .nav-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .dashboard-layout {
+            margin-top: 72px;
+        }
+
+        /* below the fixed navbar */
+    </style>
+</head>
+
+<body>
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <!-- ========== GLOBAL NAVBAR (always visible) ========== -->
+    <nav class="global-navbar">
+        <div class="nav-brand"><a href="/">Shyam<span>Steel.</span></a></div>
+        <ul class="nav-links">
+            <li><a href="/">Home</a></li>
+            <li><a href="/#about">About</a></li>
+            <li><a href="/#manufactured">Manufactured</a></li>
+            <li><a href="/#traded">Trading</a></li>
+            <li><a href="/dashboard.html" class="active-link">Dashboard</a></li>
+        </ul>
+        <div class="nav-actions">
+            <span class="admin-name interactive" id="adminName"><i class="ri-user-star-line"></i> Admin</span>
+            <button class="btn btn-danger" onclick="logout()" style="padding:0.5rem 1rem;"><i
+                    class="ri-logout-circle-line"></i> Logout</button>
+        </div>
+    </nav>
+
+    <!-- ========== DASHBOARD BODY ========== -->
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-logo interactive"><i class="ri-shield-flash-line"></i> Control<span>Center.</span></div>
+            <ul class="sidebar-nav" id="sidebarMenu">
+                <li data-target="order-entry"><i class="ri-add-box-line"></i> Order Entry</li>
+                <li data-target="pending-orders"><i class="ri-time-line"></i> Pending Orders</li>
+                <li data-target="completed-orders"><i class="ri-checkbox-circle-line"></i> Completed Orders</li>
+                <li data-target="order-statistic"><i class="ri-bar-chart-2-line"></i> Order Statistics</li>
+                <li data-target="change-email" style="margin-top:auto;"><i class="ri-settings-4-line"></i> Security
+                    Settings</li>
+            </ul>
+        </div>
+
+        <!-- Main Area -->
+        <div class="main-area" id="bgArea">
+            <!-- Top Sub-Navbar -->
+            <div class="top-navbar">
+                <div class="nav-title interactive" id="dynamicTitle"><i class="ri-command-line"></i> Control Center
+                </div>
+                <div class="nav-icons">
+                    <div class="notification-bell interactive" id="notifBell">
+                        <i class="ri-notification-3-line"></i>
+                        <div class="notification-dot" id="notifDot"></div>
+                        <div class="notification-dropdown" id="notifDropdown"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== Order Entry Section ===== -->
+            <div class="section-container" id="order-entry">
+                <h2 class="section-title"><i class="ri-magic-line"></i> Smart Order Entry</h2>
+
+                <div class="card">
+                    <h4><i class="ri-brain-line"></i> Smart Suggestions</h4>
+                    <div class="suggestion-bar" id="suggestionBarParties"></div>
+                    <div class="suggestion-bar" id="suggestionBarProducts"></div>
+                    <div class="suggestion-bar" id="suggestionBarSizes"></div>
+                </div>
+
+                <div class="card interactive">
+                    <form id="orderForm">
+                        <div class="form-group">
+                            <label><i class="ri-building-line"></i> Party Name</label>
+                            <input type="text" id="partyName" required placeholder="Enter party/client name...">
+                        </div>
+
+                        <div id="productLinesContainer"></div>
+                        <button type="button" class="btn btn-secondary w-100" style="margin-bottom: 2rem;"
+                            onclick="addProductLine()"><i class="ri-add-line"></i> Add Product</button>
+
+                        <div style="display:flex; gap: 15px; flex-wrap:wrap;">
+                            <div class="form-group" style="flex:1;">
+                                <label><i class="ri-calendar-event-line"></i> Order Date</label>
+                                <input type="date" id="orderDate" required>
+                            </div>
+                            <div class="form-group" style="flex:1;">
+                                <label><i class="ri-calendar-schedule-line"></i> Due Date</label>
+                                <input type="date" id="dueDate" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100"><i class="ri-rocket-line"></i> Submit
+                            Order</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ===== Pending Orders Section ===== -->
+            <div class="section-container" id="pending-orders">
+                <h2 class="section-title"><i class="ri-loader-3-line"></i> Pending Orders</h2>
+
+                <div class="card filters interactive">
+                    <div class="form-group">
+                        <label><i class="ri-search-eye-line"></i> Search</label>
+                        <input type="text" id="searchPending" placeholder="Search party, product, or amount...">
+                    </div>
+                    <div class="form-group">
+                        <label>Start Date</label>
+                        <input type="date" id="pendingStart">
+                    </div>
+                    <div class="form-group">
+                        <label>End Date</label>
+                        <input type="date" id="pendingEnd">
+                    </div>
+                    <button class="btn btn-primary" onclick="loadPending()"><i class="ri-filter-3-line"></i>
+                        Filter</button>
+                </div>
+
+                <div class="card table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Party Name</th>
+                                <th>Items</th>
+                                <th>Total Amount</th>
+                                <th>Order Date</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pendingTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ===== Completed Orders Section ===== -->
+            <div class="section-container" id="completed-orders">
+                <h2 class="section-title"><i class="ri-check-double-line"></i> Completed Orders</h2>
+
+                <div class="card filters interactive">
+                    <div class="form-group">
+                        <label><i class="ri-search-eye-line"></i> Search</label>
+                        <input type="text" id="searchCompleted" placeholder="Search party, product, or amount...">
+                    </div>
+                    <div class="form-group">
+                        <label>Start Date</label>
+                        <input type="date" id="completedStart">
+                    </div>
+                    <div class="form-group">
+                        <label>End Date</label>
+                        <input type="date" id="completedEnd">
+                    </div>
+                    <button class="btn btn-primary" onclick="loadCompleted()"><i class="ri-filter-3-line"></i>
+                        Filter</button>
+                </div>
+
+                <div class="card table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Party Name</th>
+                                <th>Items</th>
+                                <th>Total Amount</th>
+                                <th>Order Date</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="completedTbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ===== Statistics Section ===== -->
+            <div class="section-container" id="order-statistic">
+                <h2 class="section-title"><i class="ri-dashboard-3-line"></i> Order Statistics</h2>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3 id="statTotal">0</h3>
+                        <p>Total Orders</p>
+                        <i class="ri-global-line"></i>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="statPending" style="color:var(--warning)">0</h3>
+                        <p>Pending</p>
+                        <i class="ri-loader-4-line"></i>
+                    </div>
+                    <div class="stat-card glow-success">
+                        <h3 id="statCompleted">0</h3>
+                        <p>Completed</p>
+                        <i class="ri-checkbox-circle-line"></i>
+                    </div>
+                    <div class="stat-card glow-warning">
+                        <h3 id="statDueToday">0</h3>
+                        <p>Due Today</p>
+                        <i class="ri-alert-line"></i>
+                    </div>
+                    <div class="stat-card glow-danger">
+                        <h3 id="statOverdue">0</h3>
+                        <p>Overdue</p>
+                        <i class="ri-alarm-warning-line"></i>
+                    </div>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="card chart-box interactive">
+                        <canvas id="ratioChart"></canvas>
+                    </div>
+                    <div class="card chart-box interactive">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== Credentials Section ===== -->
+            <div class="section-container" id="change-email">
+                <h2 class="section-title"><i class="ri-key-2-line"></i> Security Settings</h2>
+
+                <div class="card interactive">
+                    <form id="credsForm">
+                        <div style="display:flex; gap:15px; flex-wrap:wrap;">
+                            <div class="form-group" style="flex:1;">
+                                <label><i class="ri-mail-lock-line"></i> Current Email</label>
+                                <input type="email" id="currEmail" required>
+                            </div>
+                            <div class="form-group" style="flex:1;">
+                                <label><i class="ri-lock-password-line"></i> Current Password</label>
+                                <input type="password" id="currPassword" required>
+                            </div>
+                        </div>
+                        <div style="display:flex; gap:15px; flex-wrap:wrap;">
+                            <div class="form-group" style="flex:1;">
+                                <label><i class="ri-mail-send-line"></i> New Email</label>
+                                <input type="email" id="newEmail" required>
+                            </div>
+                            <div class="form-group" style="flex:1;">
+                                <label><i class="ri-shield-keyhole-line"></i> New Password</label>
+                                <input type="password" id="newPassword" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label><i class="ri-shield-check-line"></i> Confirm New Password</label>
+                            <input type="password" id="confirmPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100"><i class="ri-refresh-line"></i> Update
+                            Credentials</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div class="modal-overlay" id="orderModal">
+        <div class="card" style="max-width: 600px; padding: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="margin-bottom: 0; display:flex; gap:10px;"><i class="ri-file-list-3-line"></i> Order Details
+                </h3>
+                <button class="close-modal-btn interactive" onclick="closeOrderModal()"><i
+                        class="ri-close-line"></i></button>
+            </div>
+            <div id="orderDetailsContent">
+                <!-- Content injected via JS -->
+            </div>
+            <div id="orderEditContent" style="display:none;">
+                <!-- Edit form injected via JS -->
+            </div>
+            <div class="modal-actions" style="margin-top: 1.5rem; display: flex; gap: 10px; justify-content: flex-end;"
+                id="orderModalActions">
+                <!-- Buttons injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+    <script src="/js/dashboard.js"></script>
+    <script>
+        // Custom Cursor
+        document.addEventListener('mousemove', e => {
+            const cursor = document.querySelector('.cursor');
+            const follower = document.querySelector('.cursor-follower');
+            if (cursor) { cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px'; }
+            if (follower) { follower.style.left = e.clientX + 'px'; follower.style.top = e.clientY + 'px'; }
+        });
+
+        // Update dynamic title on sidebar click
+        document.querySelectorAll('#sidebarMenu li').forEach(li => {
+            li.addEventListener('click', () => {
+                document.getElementById('dynamicTitle').innerHTML = '<i class="ri-command-line"></i> ' + li.innerText.trim();
+            });
+        });
+    </script>
+</body>
+
+</html>
