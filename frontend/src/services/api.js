@@ -3,7 +3,7 @@ import axios from 'axios';
 // In production, VITE_API_URL points to the Render backend URL
 // In development, the Vite proxy handles routing (baseURL is empty)
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || '',
+    baseURL: import.meta.env.DEV ? '' : 'https://shreeshyam-xiul.onrender.com',
     withCredentials: true,
     headers: { 'Content-Type': 'application/json' }
 });
