@@ -37,10 +37,8 @@ export default function Login() {
         <div className="login-bg">
             <div className="login-container">
                 <div className="login-box card interactive">
-                    <div style={{ textAlign: 'center', marginBottom: '1.5rem', display: 'flex', justifyContent: 'center' }}>
-                        <div style={{ backgroundColor: '#ffffff', padding: '10px 20px', borderRadius: '12px', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}>
-                            <img src="/assets/images/logo.jpg" alt="Shree Shyam Steel Logo" style={{ height: '60px', width: 'auto', mixBlendMode: 'multiply' }} />
-                        </div>
+                    <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+                        <img src="/assets/images/clean-logo.png" alt="Shree Shyam Steel Logo" style={{ height: '70px', width: 'auto' }} />
                     </div>
                     <h1 className="login-logo" style={{ marginTop: 0 }}>
                         Shree Shyam <span>Steel</span>
