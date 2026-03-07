@@ -9,11 +9,12 @@ dotenv.config();
 const app = express();
 
 // ── Production CORS Configuration ──
+// Auto-strip trailing slashes from FRONTEND_URL to prevent CORS mismatch
 const allowedOrigins = [
     process.env.FRONTEND_URL, // e.g. https://shyamsteel.vercel.app
     'http://localhost:5173',  // local Vite dev
     'http://localhost:5000',  // local backend
-].filter(Boolean);
+].filter(Boolean).map(url => url.replace(/\/$/, ''));
 
 app.use(cors({
     origin: function (origin, callback) {
