@@ -33,8 +33,16 @@ export default function Navbar() {
     return (
         <nav className={`navbar${scrolled ? ' scrolled' : ''}`}>
             <div className="nav-brand">
-                <Link to="/">
-                    <img src="/assets/images/logo.jpg" alt="Shree Shyam Steel" style={{ height: '55px', width: 'auto', borderRadius: '4px' }} />
+                <Link to="/" style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    backgroundColor: '#ffffff',
+                    padding: '6px 16px',
+                    borderRadius: '50px',
+                    boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
+                    textDecoration: 'none'
+                }}>
+                    <img src="/assets/images/logo.jpg" alt="Shree Shyam Steel" style={{ height: '40px', width: 'auto', mixBlendMode: 'multiply' }} />
                 </Link>
             </div>
 
