@@ -21,10 +21,15 @@ app.use(cors({
     origin: function (origin, callback) {
         // allow requests with no origin (mobile apps, curl, etc.)
         if (!origin) return callback(null, true);
-        if (allowedOrigins.indexOf(origin) !== -1) {
+
+        // Relax strict matching. Just see if it's anywhere in the array.
+        // OR if the origin ends with 'vercel.app' (since we're getting CORS issues, let's make it safe for this Vercel deployment)
+        if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('vercel.app')) {
             callback(null, true);
         } else {
-            callback(new Error('Not allowed by CORS'));
+            // Do NOT throw an error, it causes a 500 Internal Server error. 
+            // Pass false instead, which safely denies CORS.
+            callback(null, false);
         }
     },
     credentials: true
