@@ -33,7 +33,9 @@ export default function Navbar() {
     return (
         <nav className={`navbar${scrolled ? ' scrolled' : ''}`}>
             <div className="nav-brand">
-                <Link to="/">Shyam<span>Steel.</span></Link>
+                <Link to="/">
+                    <img src="/assets/images/logo.jpg" alt="Shree Shyam Steel" style={{ height: '55px', width: 'auto', borderRadius: '4px' }} />
+                </Link>
             </div>
 
             <ul className={`nav-links${mobileOpen ? ' mobile-open' : ''}`}>

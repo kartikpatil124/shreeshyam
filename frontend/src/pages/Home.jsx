@@ -173,7 +173,7 @@ export default function Home() {
                         <div className="about-flex">
                             <div className="about-text">
                                 <h2 className="section-title home-section-title">Crafting <br /> <span className="gradient-text">Masterpieces</span></h2>
-                                <p>At ShyamSteel, we visualize, craft, and engineer the core structures that turn simple gatherings into majestic celebrations. From robust mandap trusses to elegant entry gates, our manufacturing speaks precision. We also curate premium trading goods like melamine dishes and luxury seating to complete your vision.</p>
+                                <p>At Shree Shyam Steel, we visualize, craft, and engineer the core structures that turn simple gatherings into majestic celebrations. From robust mandap trusses to elegant entry gates, our manufacturing speaks precision. We also curate premium trading goods like melamine dishes and luxury seating to complete your vision.</p>
                                 <div className="stats-container">
                                     <div className="stat">
                                         <h3 className="stat-number">20+</h3>
@@ -239,7 +239,7 @@ export default function Home() {
                     </div>
                     <div className="footer-bottom">
                         <div className="footer-col brand-col">
-                            <a href="#" className="footer-logo">Shyam<span>Steel.</span></a>
+                            <a href="#" className="footer-logo">Shree Shyam <span>Steel</span></a>
                             <p>Pioneers in banquet & event setups globally.</p>
                         </div>
                         <div className="footer-col">
@@ -264,7 +264,7 @@ export default function Home() {
                         </div>
                     </div>
                     <div className="footer-copyright">
-                        <p>&copy; 2026 ShyamSteel. Designed for the Future.</p>
+                        <p>&copy; 2026 Shree Shyam Steel. Designed for the Future.</p>
                     </div>
                 </footer>
             </main>

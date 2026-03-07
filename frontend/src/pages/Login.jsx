@@ -37,8 +37,11 @@ export default function Login() {
         <div className="login-bg">
             <div className="login-container">
                 <div className="login-box card interactive">
-                    <h1 className="login-logo">
-                        <i className="ri-shield-keyhole-line" /> Shyam<span>Steel</span>
+                    <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+                        <img src="/assets/images/logo.jpg" alt="Shree Shyam Steel Logo" style={{ height: '70px', width: 'auto', borderRadius: '6px' }} />
+                    </div>
+                    <h1 className="login-logo" style={{ marginTop: 0 }}>
+                        Shree Shyam <span>Steel</span>
                     </h1>
                     <p className="login-subtitle">Secure Administration Portal</p>
                     <form onSubmit={handleSubmit}>
@@ -48,8 +51,7 @@ export default function Login() {
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                required
-                                placeholder="name@shyamsteel.com"
+                                placeholder="admin@shreeshyamsteel.com"
                             />
                         </div>
                         <div className="form-group">
