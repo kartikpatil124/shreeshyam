@@ -38,7 +38,7 @@ export default function Login() {
             <div className="login-container">
                 <div className="login-box card interactive">
                     <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-                        <img src="/assets/images/clean-logo.png" alt="Shree Shyam Steel Logo" style={{ height: '70px', width: 'auto' }} />
+                        <img src="/assets/images/clean-logo.png" alt="Shree Shyam Steel Logo" style={{ height: '85px', width: 'auto', filter: 'drop-shadow(0px 0px 10px rgba(255, 255, 255, 0.7))' }} />
                     </div>
                     <h1 className="login-logo" style={{ marginTop: 0 }}>
                         Shree Shyam <span>Steel</span>

@@ -34,7 +34,7 @@ export default function Navbar() {
         <nav className={`navbar${scrolled ? ' scrolled' : ''}`}>
             <div className="nav-brand">
                 <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }}>
-                    <img src="/assets/images/clean-logo.png" alt="Shree Shyam Steel" style={{ height: '55px', width: 'auto' }} />
+                    <img src="/assets/images/clean-logo.png" alt="Shree Shyam Steel" style={{ height: '65px', width: 'auto', filter: 'drop-shadow(0px 0px 10px rgba(255, 255, 255, 0.7))' }} />
                 </Link>
             </div>
 
