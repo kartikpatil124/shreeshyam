@@ -48,13 +48,13 @@ function ProductModal({ product, onClose }) {
                         <h3>{product.title}</h3>
                         <p className="modal-desc">Interested in this product? Get in touch with us for more details, bulk pricing, and custom requirements.</p>
                         <div className="contact-options">
-                            <a href="tel:+919876543210" className="modal-contact-btn btn-phone">
+                            <a href="tel:+919998777474" className="modal-contact-btn btn-phone">
                                 <i className="ri-phone-line" /> +91 9998777474
                             </a>
-                            <a href="https://wa.me/919876543210" target="_blank" rel="noopener noreferrer" className="modal-contact-btn btn-whatsapp">
+                            <a href="https://wa.me/919998777474" target="_blank" rel="noopener noreferrer" className="modal-contact-btn btn-whatsapp">
                                 <i className="ri-whatsapp-line" /> WhatsApp Us
                             </a>
-                            <a href="mailto:contact@shyamsteel.com" className="modal-contact-btn btn-email">
+                            <a href="mailto:sandeep.patil3100@gmail.com" className="modal-contact-btn btn-email">
                                 <i className="ri-mail-line" /> Email Inquiry
                             </a>
                         </div>
@@ -234,7 +234,7 @@ export default function Home() {
                     <div className="footer-top">
                         <div className="footer-cta">
                             <h2>READY TO BUILD<br />A <span className="highlight">LEGACY?</span></h2>
-                            <a href="mailto:contact@shyamsteel.com" className="huge-btn">Let's Talk <i className="ri-arrow-right-line" /></a>
+                            <a href="mailto:sandeep.patil3100@gmail.com" className="huge-btn">Let's Talk <i className="ri-arrow-right-line" /></a>
                         </div>
                     </div>
                     <div className="footer-bottom">
