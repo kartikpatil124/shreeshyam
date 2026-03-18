@@ -135,8 +135,8 @@ export default function OrderEntry({ editingOrder, onOrderSaved, onToast }) {
 
     return (
         <div className="section-container active" ref={formRef}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h2 className="section-title"><i className="ri-magic-line" /> Smart Order Entry</h2>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                <h2 className="section-title" style={{ margin: 0 }}><i className="ri-magic-line" /> Smart Order Entry</h2>
                 <button type="button" onClick={() => setShowCalculator(!showCalculator)} className="btn btn-secondary">
                     <i className="ri-calculator-line" /> {showCalculator ? 'Hide Calculator' : 'Show Calculator'}
                 </button>
@@ -176,16 +176,12 @@ export default function OrderEntry({ editingOrder, onOrderSaved, onToast }) {
                             <div className="form-group"><label>Product Name</label><input type="text" value={prod.productName} onChange={(e) => updateProduct(idx, 'productName', e.target.value)} required /></div>
                             <div className="form-group"><label>Product Size (Optional)</label><input type="text" value={prod.productSize} onChange={(e) => updateProduct(idx, 'productSize', e.target.value)} /></div>
                             <div className="form-group form-group-row" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                                <div style={{ flex: 1, minWidth: '120px' }}>
+                                <div style={{ flex: 1, minWidth: '100%' }}>
                                     <label>Pricing Type</label>
-                                    <select
-                                        value={prod.pricingType || 'per_piece'}
-                                        onChange={(e) => updateProduct(idx, 'pricingType', e.target.value)}
-                                        style={{ padding: '0.85rem 1rem', background: 'rgba(0,0,0,0.4)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-main)', width: '100%' }}
-                                    >
-                                        <option value="per_piece">Per Piece</option>
-                                        <option value="per_kg">Per KG</option>
-                                    </select>
+                                    <div className="pricing-toggle">
+                                        <button type="button" className={prod.pricingType === 'per_piece' ? 'active' : ''} onClick={() => updateProduct(idx, 'pricingType', 'per_piece')}>Per Piece</button>
+                                        <button type="button" className={prod.pricingType === 'per_kg' ? 'active' : ''} onClick={() => updateProduct(idx, 'pricingType', 'per_kg')}>Per KG</button>
+                                    </div>
                                 </div>
                                 
                                 {prod.pricingType === 'per_piece' ? (
@@ -223,19 +219,28 @@ export default function OrderEntry({ editingOrder, onOrderSaved, onToast }) {
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label>
-                                    Auto Calculated Total
+                                <label>Smart Calculator Preview</label>
+                                <div style={{
+                                    background: 'var(--saas-bg)',
+                                    padding: '15px', borderRadius: '8px',
+                                    border: '1px solid var(--saas-success)',
+                                    display: 'flex', flexDirection: 'column', gap: '5px'
+                                }}>
                                     {prod.pricingType === 'per_piece' && prod.pricePerPiece ? (
-                                        <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginLeft: '10px', fontWeight: 'normal' }}>
-                                            ({prod.pricePerPiece} × {prod.quantity} = ₹{prod.totalPrice || prod.finalPrice || 0})
+                                        <span style={{ fontSize: '1rem', color: 'var(--saas-text-muted)' }}>
+                                            {prod.pricePerPiece} <small>per piece</small> × {prod.quantity} <small>qty</small> =
                                         </span>
                                     ) : prod.pricingType === 'per_kg' && prod.pricePerKg && prod.weightPerItem ? (
-                                        <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginLeft: '10px', fontWeight: 'normal' }}>
-                                            ({prod.pricePerKg} × {prod.weightPerItem} × {prod.quantity} = ₹{prod.totalPrice || prod.finalPrice || 0})
+                                        <span style={{ fontSize: '1rem', color: 'var(--saas-text-muted)' }}>
+                                            {prod.pricePerKg} <small>per kg</small> × {prod.weightPerItem} <small>kg/item</small> × {prod.quantity} <small>qty</small> =
                                         </span>
-                                    ) : null}
-                                </label>
-                                <input type="text" readOnly value={`₹${(prod.totalPrice || prod.finalPrice || 0).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`} style={{ background: 'rgba(245,158,11,0.1)', fontWeight: 'bold', color: 'var(--primary)', borderColor: 'rgba(245,158,11,0.3)' }} />
+                                    ) : (
+                                        <span style={{ fontSize: '1rem', color: 'var(--saas-text-muted)' }}>Enter details to calculate...</span>
+                                    )}
+                                    <span style={{ fontSize: '1.5rem', fontWeight: '800', color: 'var(--saas-success)' }}>
+                                        ₹{(prod.totalPrice || prod.finalPrice || 0).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                                    </span>
+                                </div>
                             </div>
                             <div className="form-group"><label>Description (Optional)</label><input type="text" value={prod.description} onChange={(e) => updateProduct(idx, 'description', e.target.value)} /></div>
                         </div>
@@ -245,7 +250,7 @@ export default function OrderEntry({ editingOrder, onOrderSaved, onToast }) {
                         <i className="ri-add-line" /> Add Product
                     </button>
 
-                    <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', marginBottom: '80px' }}>
                         <div className="form-group" style={{ flex: 1 }}>
                             <label><i className="ri-calendar-event-line" /> Order Date</label>
                             <input type="date" value={orderDate} onChange={(e) => setOrderDate(e.target.value)} required />
@@ -256,9 +261,19 @@ export default function OrderEntry({ editingOrder, onOrderSaved, onToast }) {
                         </div>
                     </div>
 
-                    <button type="submit" className="btn btn-primary w-100" disabled={submitting}>
-                        {editId ? <><i className="ri-save-line" /> Update Order</> : <><i className="ri-rocket-line" /> Submit Order</>}
-                    </button>
+                    <div className="sticky-total">
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div>
+                                <span style={{ fontSize: '0.9rem', color: 'var(--saas-text-muted)', fontWeight: '500' }}>Grand Total</span>
+                                <h3 style={{ margin: 0, color: 'var(--saas-success)', fontSize: '1.4rem' }}>
+                                    ₹{products.reduce((acc, p) => acc + (p.totalPrice || p.finalPrice || 0), 0).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                                </h3>
+                            </div>
+                            <button type="submit" className="btn btn-primary" disabled={submitting} style={{ padding: '0.8rem 2rem', fontSize: '1.1rem' }}>
+                                {editId ? <><i className="ri-save-line" /> Update Order</> : <><i className="ri-rocket-line" /> Submit Order</>}
+                            </button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>

@@ -9,6 +9,7 @@ import PendingOrders from '../dashboard/PendingOrders';
 import CompletedOrders from '../dashboard/CompletedOrders';
 import OrderStatistics from '../dashboard/OrderStatistics';
 import SecuritySettings from '../dashboard/SecuritySettings';
+import '../saas.css';
 
 export default function Dashboard() {
     const { admin, logout } = useAuth();
@@ -65,7 +66,7 @@ export default function Dashboard() {
     };
 
     return (
-        <>
+        <div className="saas-dashboard">
             {/* Global Navbar */}
             <nav className="global-navbar">
                 <div className="nav-brand"><Link to="/">Shyam<span>Steel.</span></Link></div>
@@ -135,10 +136,30 @@ export default function Dashboard() {
 
             {/* Mobile Floating Action Button (Opens Order Entry) */}
             {activeSection !== 'order-entry' && (
-                <button className="fab-btn" onClick={() => handleNavigate('order-entry')}>
+                <button className="fab-mobile" onClick={() => handleNavigate('order-entry')} aria-label="Add Order">
                     <i className="ri-add-line" />
                 </button>
             )}
+
+            {/* Mobile Bottom Navigation (Visible only on mobile) */}
+            <div className="bottom-nav">
+                <button className={`bottom-nav-item ${activeSection === 'order-statistic' ? 'active' : ''}`} onClick={() => handleNavigate('order-statistic')}>
+                    <i className="ri-dashboard-line" />
+                    <span>Home</span>
+                </button>
+                <button className={`bottom-nav-item ${activeSection === 'pending-orders' ? 'active' : ''}`} onClick={() => handleNavigate('pending-orders')}>
+                    <i className="ri-time-line" />
+                    <span>Pending</span>
+                </button>
+                <button className={`bottom-nav-item ${activeSection === 'completed-orders' ? 'active' : ''}`} onClick={() => handleNavigate('completed-orders')}>
+                    <i className="ri-checkbox-circle-line" />
+                    <span>Done</span>
+                </button>
+                <button className={`bottom-nav-item ${activeSection === 'change-email' ? 'active' : ''}`} onClick={() => handleNavigate('change-email')}>
+                    <i className="ri-settings-4-line" />
+                    <span>Settings</span>
+                </button>
+            </div>
 
             {/* Toast Container */}
             <div className="toast-container">
@@ -146,6 +167,6 @@ export default function Dashboard() {
                     <Toast key={t.id} message={t.message} type={t.type} onClose={() => removeToast(t.id)} />
                 ))}
             </div>
-        </>
+        </div>
     );
 }
