@@ -1,19 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 .saas-dashboard {
-  --saas-primary: #4F46E5;
-  --saas-primary-hover: #4338ca;
-  --saas-bg: #F9FAFB;
-  --saas-card: #FFFFFF;
-  --saas-text: #111827;
-  --saas-text-muted: #6b7280;
-  --saas-border: #e5e7eb;
+  --saas-primary: #6366f1;
+  --saas-primary-hover: #4f46e5;
+  --saas-bg: #09090b;
+  --saas-card: #18181b;
+  --saas-text: #fafafa;
+  --saas-text-muted: #a1a1aa;
+  --saas-border: #27272a;
   --saas-success: #10b981;
   --saas-danger: #ef4444;
   --saas-warning: #f59e0b;
   --saas-font: 'Inter', sans-serif;
-  --saas-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --saas-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --saas-shadow: 0 4px 10px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --saas-shadow-lg: 0 10px 20px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
 
   font-family: var(--saas-font) !important;
   background-color: var(--saas-bg) !important;
@@ -167,7 +167,7 @@
   transition: all 0.2s ease;
 }
 .saas-dashboard .pricing-toggle button.active {
-  background: #fff;
+  background: var(--saas-border);
   color: var(--saas-primary);
   box-shadow: var(--saas-shadow);
   font-weight: 600;
@@ -213,15 +213,16 @@
   /* Bottom Navigation */
   .saas-dashboard .bottom-nav {
     position: fixed;
-    bottom: 0; left: 0; width: 100%;
-    background: var(--saas-card);
+    bottom: 20px; left: 4%; right: 4%; width: auto;
+    background: rgba(24, 24, 27, 0.85) !important;
+    backdrop-filter: blur(12px);
     display: flex;
     justify-content: space-around;
-    padding: 10px 0;
-    box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+    padding: 12px 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.6);
     z-index: 1000;
-    border-top: 1px solid var(--saas-border);
-    padding-bottom: env(safe-area-inset-bottom, 20px);
+    border: 1px solid var(--saas-border);
+    border-radius: 24px;
   }
   
   .saas-dashboard .bottom-nav-item {
@@ -238,6 +239,9 @@
     font-size: 1.4rem;
   }
   .saas-dashboard .bottom-nav-item.active {
+    color: var(--saas-text);
+  }
+  .saas-dashboard .bottom-nav-item.active i {
     color: var(--saas-primary);
   }
   
@@ -262,7 +266,7 @@
   }
   
   .saas-dashboard .sticky-total {
-    bottom: 70px; /* Above bottom nav */
+    bottom: 85px; /* Above bottom nav */
   }
 }
 
@@ -275,5 +279,17 @@
   .saas-dashboard .bottom-nav, .saas-dashboard .fab-mobile {
     display: flex;
   }
+  
+  /* Hide top desktop nav links on mobile to make room */
+  .saas-dashboard .global-navbar .nav-links {
+    display: none !important;
+  }
+  .saas-dashboard .global-navbar {
+    padding: 15px 5% !important;
+    background: rgba(24, 24, 27, 0.85) !important;
+    backdrop-filter: blur(12px) !important;
+  }
+  .saas-dashboard .global-navbar .admin-name {
+    display: none !important;
+  }
 }
-

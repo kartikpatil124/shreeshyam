@@ -221,9 +221,9 @@ export default function OrderEntry({ editingOrder, onOrderSaved, onToast }) {
                             <div className="form-group">
                                 <label>Smart Calculator Preview</label>
                                 <div style={{
-                                    background: 'var(--saas-bg)',
+                                    background: 'rgba(16, 185, 129, 0.05)',
                                     padding: '15px', borderRadius: '8px',
-                                    border: '1px solid var(--saas-success)',
+                                    border: '1px solid rgba(16, 185, 129, 0.2)',
                                     display: 'flex', flexDirection: 'column', gap: '5px'
                                 }}>
                                     {prod.pricingType === 'per_piece' && prod.pricePerPiece ? (
