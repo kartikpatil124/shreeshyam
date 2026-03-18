@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import SuggestionBar from '../components/SuggestionBar';
+import Calculator from '../components/Calculator';
 import {
     createOrder, updateOrder,
     getProductSuggestions, getSizeSuggestions, getPartySuggestions,
@@ -13,6 +14,7 @@ export default function OrderEntry({ editingOrder, onOrderSaved, onToast }) {
     const [products, setProducts] = useState([createEmptyProduct()]);
     const [editId, setEditId] = useState(null);
     const [submitting, setSubmitting] = useState(false);
+    const [showCalculator, setShowCalculator] = useState(false);
 
     const [partySugg, setPartySugg] = useState([]);
     const [productSugg, setProductSugg] = useState([]);
@@ -20,7 +22,7 @@ export default function OrderEntry({ editingOrder, onOrderSaved, onToast }) {
     const formRef = useRef(null);
 
     function createEmptyProduct() {
-        return { productName: '', productSize: '', price: 0, quantity: 1, gst: false, finalPrice: 0, description: '' };
+        return { productName: '', productSize: '', price: 0, quantity: 1, priceType: 'pieces', gst: false, finalPrice: 0, description: '' };
     }
 
     // Load suggestions
@@ -113,7 +115,13 @@ export default function OrderEntry({ editingOrder, onOrderSaved, onToast }) {
 
     return (
         <div className="section-container active" ref={formRef}>
-            <h2 className="section-title"><i className="ri-magic-line" /> Smart Order Entry</h2>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h2 className="section-title"><i className="ri-magic-line" /> Smart Order Entry</h2>
+                <button type="button" onClick={() => setShowCalculator(!showCalculator)} className="btn btn-secondary">
+                    <i className="ri-calculator-line" /> {showCalculator ? 'Hide Calculator' : 'Show Calculator'}
+                </button>
+            </div>
+            {showCalculator && <Calculator onClose={() => setShowCalculator(false)} />}
 
             <div className="card">
                 <h4><i className="ri-brain-line" /> Smart Suggestions</h4>
@@ -149,7 +157,18 @@ export default function OrderEntry({ editingOrder, onOrderSaved, onToast }) {
                             <div className="form-group"><label>Product Size (Optional)</label><input type="text" value={prod.productSize} onChange={(e) => updateProduct(idx, 'productSize', e.target.value)} /></div>
                             <div className="form-group form-group-row" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                                 <div style={{ flex: 1, minWidth: '120px' }}>
-                                    <label>Price per Product</label>
+                                    <label>Unit</label>
+                                    <select
+                                        value={prod.priceType || 'pieces'}
+                                        onChange={(e) => updateProduct(idx, 'priceType', e.target.value)}
+                                        style={{ padding: '0.85rem 1rem', background: 'rgba(0,0,0,0.4)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-main)', width: '100%' }}
+                                    >
+                                        <option value="pieces">Per Piece</option>
+                                        <option value="kg">Per Kg</option>
+                                    </select>
+                                </div>
+                                <div style={{ flex: 1, minWidth: '120px' }}>
+                                    <label>Price</label>
                                     <input type="number" value={prod.price} onChange={(e) => updateProduct(idx, 'price', e.target.value)} required />
                                 </div>
                                 <div style={{ flex: 1, minWidth: '120px' }}>

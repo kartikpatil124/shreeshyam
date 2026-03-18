@@ -5,6 +5,7 @@ const orderItemSchema = new mongoose.Schema({
     productSize: { type: String },
     price: { type: Number, required: true },
     quantity: { type: Number, required: true, default: 1 },
+    priceType: { type: String, enum: ['pieces', 'kg'], default: 'pieces' },
     gst: { type: Boolean, default: false },
     finalPrice: { type: Number, required: true },
     description: { type: String }
