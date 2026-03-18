@@ -54,24 +54,26 @@ export default function PendingOrders({ onEdit, onToast, onNotification }) {
         <div className="section-container active">
             <h2 className="section-title"><i className="ri-loader-3-line" /> Pending Orders</h2>
 
-            <div className="card filters interactive">
-                <div className="form-group">
-                    <label><i className="ri-search-eye-line" /> Search</label>
+            <div className="card filters interactive" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', padding: '24px', borderRadius: '16px', marginBottom: '24px' }}>
+                <div className="form-group" style={{ flex: '1 1 250px' }}>
+                    <label><i className="ri-search-eye-line" style={{ marginRight: '6px' }}/> Search</label>
                     <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search party, product, or amount..." />
                 </div>
-                <div className="form-group">
+                <div className="form-group" style={{ flex: '1 1 150px' }}>
                     <label>Start Date</label>
                     <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
                 </div>
-                <div className="form-group">
+                <div className="form-group" style={{ flex: '1 1 150px' }}>
                     <label>End Date</label>
                     <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
                 </div>
-                <button className="btn btn-primary" onClick={loadOrders}><i className="ri-filter-3-line" /> Filter</button>
+                <div style={{ display: 'flex', alignItems: 'flex-end', flex: '1 1 120px' }}>
+                    <button className="btn btn-primary w-100" onClick={loadOrders} style={{ height: '48px', margin: 0 }}><i className="ri-filter-3-line" /> Filter</button>
+                </div>
             </div>
 
-            <div className="card table-responsive card-view">
-                <table className="responsive-table">
+            <div className="card table-responsive card-view" style={{ padding: '0', borderRadius: '16px', overflow: 'hidden' }}>
+                <table className="responsive-table" style={{ width: '100%', borderCollapse: 'collapse' }}>
                     <thead>
                         <tr>
                             <th>Party Name</th><th>Items</th><th>Total Amount</th><th>Order Date</th><th>Due Date</th><th>Status</th><th>Actions</th>
@@ -85,16 +87,16 @@ export default function PendingOrders({ onEdit, onToast, onNotification }) {
                             const main = items.length > 0 ? items[0].productName : 'No items';
                             const display = items.length > 1 ? `${main} +${items.length - 1} more` : main;
                             return (
-                                <tr key={o._id} className="interactive" onClick={() => setSelectedOrder(o)} style={{ cursor: 'pointer' }}>
-                                    <td data-label="Party Name">{o.partyName || '-'}</td>
-                                    <td data-label="Items">{display}</td>
-                                    <td data-label="Total Amount">₹{(o.totalAmount || 0).toLocaleString('en-IN')}</td>
-                                    <td data-label="Order Date">{formatDate(o.orderDate)}</td>
-                                    <td data-label="Due Date">{formatDate(o.dueDate)}</td>
-                                    <td data-label="Status"><span className="status-badge status-pending">Pending</span></td>
-                                    <td data-label="Actions" className="table-actions" onClick={(e) => e.stopPropagation()}>
-                                        <button className="btn btn-success" onClick={() => handleComplete(o._id)}><i className="ri-check-line" /></button>
-                                        <button className="btn btn-danger" onClick={() => handleDelete(o._id)}><i className="ri-delete-bin-line" /></button>
+                                <tr key={o._id} className="interactive" onClick={() => setSelectedOrder(o)} style={{ cursor: 'pointer', borderBottom: '1px solid var(--saas-border)', transition: 'background 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.background = 'var(--saas-bg)'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>
+                                    <td data-label="Party Name" style={{ padding: '16px 20px', fontWeight: 600 }}>{o.partyName || '-'}</td>
+                                    <td data-label="Items" style={{ padding: '16px 20px' }}>{display}</td>
+                                    <td data-label="Total Amount" style={{ padding: '16px 20px', fontWeight: 700, color: 'var(--saas-success)' }}>₹{(o.totalAmount || 0).toLocaleString('en-IN')}</td>
+                                    <td data-label="Order Date" style={{ padding: '16px 20px' }}>{formatDate(o.orderDate)}</td>
+                                    <td data-label="Due Date" style={{ padding: '16px 20px' }}>{formatDate(o.dueDate)}</td>
+                                    <td data-label="Status" style={{ padding: '16px 20px' }}><span className="status-badge" style={{ background: 'rgba(245, 158, 11, 0.15)', color: 'var(--saas-warning)', padding: '6px 12px', borderRadius: '20px', fontSize: '0.85rem', fontWeight: 600 }}>Pending</span></td>
+                                    <td data-label="Actions" className="table-actions" style={{ padding: '16px 20px', display: 'flex', gap: '8px' }} onClick={(e) => e.stopPropagation()}>
+                                        <button className="btn btn-success" onClick={() => handleComplete(o._id)} style={{ padding: '8px 12px' }}><i className="ri-check-line" /></button>
+                                        <button className="btn btn-danger" onClick={() => handleDelete(o._id)} style={{ padding: '8px 12px' }}><i className="ri-delete-bin-line" /></button>
                                     </td>
                                 </tr>
                             );

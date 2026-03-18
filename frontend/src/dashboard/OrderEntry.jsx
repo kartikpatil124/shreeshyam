@@ -141,14 +141,23 @@ export default function OrderEntry({ editingOrder, onOrderSaved, onToast }) {
     };
 
     return (
-        <div className="section-container active" ref={formRef}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                <h2 className="section-title" style={{ margin: 0 }}><i className="ri-magic-line" /> Order Workflow</h2>
+        <div className="section-container active" ref={formRef} style={{ padding: '0 0 40px 0' }}>
+            {/* Sticky Mobile Header */}
+            <div className="mobile-header d-md-none" style={{ display: 'flex', alignItems: 'center', gap: '15px', padding: '16px 24px', background: 'rgba(24, 24, 27, 0.85)', backdropFilter: 'blur(12px)', position: 'sticky', top: 0, zIndex: 100, borderBottom: '1px solid var(--saas-border)', margin: '0 -20px 24px -20px' }}>
+                <button type="button" onClick={() => window.dispatchEvent(new Event('popstate'))} style={{ background: 'transparent', border: 'none', color: 'var(--saas-text)', fontSize: '1.5rem', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center' }}>
+                    <i className="ri-arrow-left-line" />
+                </button>
+                <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 700 }}>{editId ? 'Edit Order' : 'Order Workflow'}</h2>
+            </div>
+            
+            {/* Desktop Header */}
+            <div className="d-none d-md-flex" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', padding: '0 20px' }}>
+                <h2 className="section-title" style={{ margin: 0 }}><i className="ri-magic-line" style={{ color: 'var(--saas-primary)', marginRight: '8px' }} /> Order Workflow</h2>
             </div>
 
-            <div className="card interactive" style={{ padding: '0', background: 'transparent', border: 'none', boxShadow: 'none' }}>
+            <div className="card interactive" style={{ padding: '0 20px', background: 'transparent', border: 'none', boxShadow: 'none' }}>
                 <form onSubmit={handleSubmit}>
-                    <div className="card" style={{ marginBottom: '20px' }}>
+                    <div className="card" style={{ padding: '24px', marginBottom: '24px', borderRadius: '16px' }}>
                         <SmartInput 
                             label="Party Name" 
                             icon="ri-building-line"
@@ -161,38 +170,50 @@ export default function OrderEntry({ editingOrder, onOrderSaved, onToast }) {
                     </div>
 
                     {/* Tally Style Product Workflow */}
-                    <div style={{ marginBottom: '20px' }}>
+                    <div style={{ marginBottom: '24px' }}>
+                        <label style={{ color: 'var(--saas-text-muted)', fontSize: '0.85rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px', display: 'block' }}>Line Items</label>
                         {products.map((prod, idx) => (
-                            <div key={idx} style={{ marginBottom: '1rem' }}>
+                            <div key={idx} style={{ marginBottom: '16px', animation: 'fadeIn 0.3s ease-out' }}>
                                 {prod.isCollapsed ? (
-                                    <div className="product-line card" style={{ padding: '16px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'all 0.2s', border: '1px solid var(--saas-border)', borderRadius: '12px', margin: 0 }} onClick={() => updateProduct(idx, 'isCollapsed', false)}>
-                                        <div style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
-                                            <div style={{ background: 'rgba(99, 102, 241, 0.1)', color: 'var(--saas-primary)', padding: '10px 14px', borderRadius: '8px', fontWeight: 'bold' }}>{idx + 1}</div>
-                                            <div>
-                                                <strong style={{ fontSize: '1.2rem', color: 'var(--saas-text)' }}>{prod.productName || 'Unnamed Product'}</strong>
-                                                <div style={{ color: 'var(--saas-text-muted)', fontSize: '0.9rem', marginTop: '4px' }}>
-                                                    {prod.pricingType === 'per_piece' 
-                                                        ? `${prod.pricePerPiece || 0}/pc × ${prod.quantity || 0} qty`
-                                                        : `${prod.pricePerKg || 0}/kg × ${prod.weightPerItem || 0}kg × ${prod.quantity || 0} qty`}
-                                                    {prod.gst ? ' (Incl. GST)' : ''}
-                                                </div>
+                                    <div className="product-line card interactive" style={{ padding: '16px', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center', transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)', border: '1px solid var(--saas-border)', borderRadius: '12px', margin: 0, background: 'var(--saas-card)' }} onClick={() => updateProduct(idx, 'isCollapsed', false)}>
+                                        <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap', flex: 1 }}>
+                                            <div style={{ background: 'rgba(99, 102, 241, 0.15)', color: 'var(--saas-primary)', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '50%', fontWeight: 'bold', fontSize: '0.85rem' }}>{idx + 1}</div>
+                                            <div style={{ display: 'flex', gap: '10px', alignItems: 'center', color: 'var(--saas-text-muted)', fontSize: '0.95rem', flexWrap: 'wrap' }}>
+                                                <span style={{ color: 'var(--saas-text)', fontWeight: 600 }}>{prod.productName || 'Unnamed Product'}</span>
+                                                <span style={{ opacity: 0.3 }}>|</span>
+                                                {prod.pricingType === 'per_piece' ? (
+                                                    <span>₹{prod.pricePerPiece || 0}/pc</span>
+                                                ) : (
+                                                    <>
+                                                        <span>₹{prod.pricePerKg || 0}/kg</span>
+                                                        <span style={{ opacity: 0.3 }}>|</span>
+                                                        <span>{prod.weightPerItem || 0}kg</span>
+                                                    </>
+                                                )}
+                                                <span style={{ opacity: 0.3 }}>|</span>
+                                                <span>Qty: <strong style={{ color: 'var(--saas-text)' }}>{prod.quantity || 0}</strong></span>
                                             </div>
                                         </div>
-                                        <div style={{ textAlign: 'right', display: 'flex', alignItems: 'center', gap: '15px' }}>
-                                            <h4 style={{ color: 'var(--saas-text)', margin: 0, fontSize: '1.3rem' }}>₹{(prod.totalPrice || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</h4>
-                                            <div style={{ color: 'var(--saas-text-muted)', padding: '6px' }}><i className="ri-edit-line" style={{ fontSize: '1.2rem' }} /></div>
+                                        <div style={{ display: 'flex', gap: '16px', alignItems: 'center', paddingLeft: '10px' }}>
+                                            <span style={{ color: 'var(--saas-success)', fontWeight: 700, fontSize: '1.1rem' }}>₹{(prod.totalPrice || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</span>
+                                            <div style={{ display: 'flex', gap: '8px' }}>
+                                                <button type="button" onClick={(e) => { e.stopPropagation(); updateProduct(idx, 'isCollapsed', false); }} style={{ background: 'transparent', border: 'none', color: 'var(--saas-text-muted)', padding: '6px', cursor: 'pointer' }}><i className="ri-pencil-line" style={{ fontSize: '1.2rem' }} /></button>
+                                                {products.length > 1 && (
+                                                    <button type="button" onClick={(e) => { e.stopPropagation(); removeProductLine(idx); }} style={{ background: 'transparent', border: 'none', color: 'var(--saas-text-muted)', padding: '6px', cursor: 'pointer' }}><i className="ri-delete-bin-line" style={{ fontSize: '1.2rem' }} /></button>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                 ) : (
-                                    <div className="product-line card" style={{ padding: '20px', border: '1px solid var(--saas-primary)', position: 'relative', margin: 0, boxShadow: '0 0 0 4px rgba(99, 102, 241, 0.15)' }}>
-                                        <h5 style={{ marginBottom: '15px', display: 'flex', justifyContent: 'space-between', color: 'var(--saas-primary)' }}>
-                                            Editing Item #{idx + 1}
+                                    <div className="product-line card" style={{ padding: '24px', border: '1px solid var(--saas-primary)', position: 'relative', margin: 0, boxShadow: 'var(--saas-glow)', borderRadius: '16px' }}>
+                                        <h5 style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', color: 'var(--saas-primary)', fontSize: '1.1rem', alignItems: 'center' }}>
+                                            <span><i className="ri-edit-circle-line" style={{ marginRight: '8px' }} /> Editing Item #{idx + 1}</span>
                                             {products.length > 1 && (
-                                                <button type="button" className="btn btn-danger" style={{ padding: '4px 10px', fontSize: '0.8rem', background: 'transparent', color: 'var(--saas-danger)', border: '1px solid var(--saas-danger)' }} onClick={() => removeProductLine(idx)}><i className="ri-delete-bin-line" /> Remove</button>
+                                                <button type="button" className="btn btn-secondary" style={{ padding: '6px 12px', fontSize: '0.85rem', color: 'var(--saas-danger)', borderColor: 'rgba(239, 68, 68, 0.3)', borderRadius: '8px' }} onClick={() => removeProductLine(idx)}><i className="ri-delete-bin-line" /> Remove</button>
                                             )}
                                         </h5>
-                                        <div className="form-group-row" style={{ display: 'flex', gap: '15px', marginBottom: '15px' }}>
-                                            <div style={{ flex: 2 }}>
+                                        <div className="form-group-row" style={{ display: 'flex', gap: '16px', marginBottom: '20px', flexWrap: 'wrap' }}>
+                                            <div style={{ flex: '1 1 60%', minWidth: '200px' }}>
                                                 <SmartInput 
                                                     label="Product Name" 
                                                     value={prod.productName} 
@@ -202,7 +223,7 @@ export default function OrderEntry({ editingOrder, onOrderSaved, onToast }) {
                                                     placeholder="Search product..."
                                                 />
                                             </div>
-                                            <div style={{ flex: 1 }}>
+                                            <div style={{ flex: '1 1 30%', minWidth: '150px' }}>
                                                 <SmartInput 
                                                     label="Size (Opt)" 
                                                     value={prod.productSize} 
@@ -212,43 +233,43 @@ export default function OrderEntry({ editingOrder, onOrderSaved, onToast }) {
                                             </div>
                                         </div>
 
-                                        <div className="form-group-row" style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', marginBottom: '15px' }}>
-                                            <div style={{ flex: 1, minWidth: '100%' }}>
-                                                <label style={{ color: 'var(--saas-text-muted)', fontSize: '0.9rem', marginBottom: '6px', display: 'block', fontWeight: 500 }}>Pricing Basis</label>
-                                                <div className="pricing-toggle" style={{ display: 'flex', background: 'var(--saas-bg)', borderRadius: '8px', padding: '4px', border: '1px solid var(--saas-border)' }}>
-                                                    <button type="button" className={prod.pricingType === 'per_piece' ? 'active' : ''} onClick={() => updateProduct(idx, 'pricingType', 'per_piece')} style={{ flex: 1, padding: '10px', background: prod.pricingType === 'per_piece' ? 'var(--saas-border)' : 'transparent', color: prod.pricingType === 'per_piece' ? 'var(--saas-primary)' : 'var(--saas-text-muted)', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}>Per Piece</button>
-                                                    <button type="button" className={prod.pricingType === 'per_kg' ? 'active' : ''} onClick={() => updateProduct(idx, 'pricingType', 'per_kg')} style={{ flex: 1, padding: '10px', background: prod.pricingType === 'per_kg' ? 'var(--saas-border)' : 'transparent', color: prod.pricingType === 'per_kg' ? 'var(--saas-primary)' : 'var(--saas-text-muted)', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}>Per KG</button>
+                                        <div className="form-group-row" style={{ display: 'flex', gap: '16px', flexWrap: 'wrap', marginBottom: '24px' }}>
+                                            <div style={{ flex: '1 1 100%' }}>
+                                                <label style={{ color: 'var(--saas-text-muted)', fontSize: '0.85rem', marginBottom: '8px', display: 'block', fontWeight: 600 }}>Pricing Basis</label>
+                                                <div className="pricing-toggle" style={{ display: 'flex', background: 'var(--saas-bg)', borderRadius: '12px', padding: '6px', border: '1px solid var(--saas-border)' }}>
+                                                    <button type="button" className={prod.pricingType === 'per_piece' ? 'active' : ''} onClick={() => updateProduct(idx, 'pricingType', 'per_piece')} style={{ flex: 1, padding: '12px', background: prod.pricingType === 'per_piece' ? 'var(--saas-card)' : 'transparent', color: prod.pricingType === 'per_piece' ? 'var(--saas-primary)' : 'var(--saas-text-muted)', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s', boxShadow: prod.pricingType === 'per_piece' ? '0 2px 4px rgba(0,0,0,0.1)' : 'none' }}>Per Piece</button>
+                                                    <button type="button" className={prod.pricingType === 'per_kg' ? 'active' : ''} onClick={() => updateProduct(idx, 'pricingType', 'per_kg')} style={{ flex: 1, padding: '12px', background: prod.pricingType === 'per_kg' ? 'var(--saas-card)' : 'transparent', color: prod.pricingType === 'per_kg' ? 'var(--saas-primary)' : 'var(--saas-text-muted)', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: 600, transition: 'all 0.2s', boxShadow: prod.pricingType === 'per_kg' ? '0 2px 4px rgba(0,0,0,0.1)' : 'none' }}>Per KG</button>
                                                 </div>
                                             </div>
                                             
                                             {prod.pricingType === 'per_piece' ? (
-                                                <div style={{ flex: 1, minWidth: '120px' }}>
-                                                    <label>Price / Piece</label>
-                                                    <input type="number" step="any" min="0" value={prod.pricePerPiece} onChange={(e) => updateProduct(idx, 'pricePerPiece', e.target.value)} required />
+                                                <div style={{ flex: 1, minWidth: '140px' }}>
+                                                    <label><i className="ri-price-tag-3-line" style={{ marginRight: '6px' }}/>Price / Piece</label>
+                                                    <input type="number" step="any" min="0" value={prod.pricePerPiece} onChange={(e) => updateProduct(idx, 'pricePerPiece', e.target.value)} required placeholder="0.00" />
                                                 </div>
                                             ) : (
                                                 <>
-                                                    <div style={{ flex: 1, minWidth: '130px' }}>
-                                                        <label>Price / KG</label>
-                                                        <input type="number" step="any" min="0" value={prod.pricePerKg} onChange={(e) => updateProduct(idx, 'pricePerKg', e.target.value)} required />
+                                                    <div style={{ flex: 1, minWidth: '140px' }}>
+                                                        <label><i className="ri-scale-3-line" style={{ marginRight: '6px' }}/>Price / KG</label>
+                                                        <input type="number" step="any" min="0" value={prod.pricePerKg} onChange={(e) => updateProduct(idx, 'pricePerKg', e.target.value)} required placeholder="0.00" />
                                                     </div>
-                                                    <div style={{ flex: 1, minWidth: '130px' }}>
-                                                        <label>Weight (KG)</label>
-                                                        <input type="number" step="any" min="0" value={prod.weightPerItem} onChange={(e) => updateProduct(idx, 'weightPerItem', e.target.value)} required />
+                                                    <div style={{ flex: 1, minWidth: '140px' }}>
+                                                        <label><i className="ri-weight-line" style={{ marginRight: '6px' }}/>Weight (KG)</label>
+                                                        <input type="number" step="any" min="0" value={prod.weightPerItem} onChange={(e) => updateProduct(idx, 'weightPerItem', e.target.value)} required placeholder="0.00" />
                                                     </div>
                                                 </>
                                             )}
 
                                             <div style={{ flex: 1, minWidth: '120px' }}>
-                                                <label>Quantity</label>
-                                                <input type="number" step="any" min="1" value={prod.quantity} onChange={(e) => updateProduct(idx, 'quantity', e.target.value)} required />
+                                                <label><i className="ri-stack-line" style={{ marginRight: '6px' }}/>Quantity</label>
+                                                <input type="number" step="any" min="1" value={prod.quantity} onChange={(e) => updateProduct(idx, 'quantity', e.target.value)} required placeholder="1" />
                                             </div>
-                                            <div style={{ flex: 1, minWidth: '120px' }}>
-                                                <label>Tax</label>
+                                            <div style={{ flex: 1, minWidth: '140px' }}>
+                                                <label><i className="ri-percent-line" style={{ marginRight: '6px' }}/>Tax</label>
                                                 <select
                                                     value={prod.gst ? 'true' : 'false'}
                                                     onChange={(e) => updateProduct(idx, 'gst', e.target.value === 'true')}
-                                                    style={{ width: '100%', padding: '12px 16px', background: 'var(--saas-bg)', border: '1px solid var(--saas-border)', color: 'var(--saas-text)', borderRadius: '8px' }}
+                                                    style={{ width: '100%', padding: '14px 16px', background: 'var(--saas-bg)', border: '1px solid rgba(255,255,255,0.1)', color: 'var(--saas-text)', borderRadius: '12px', height: '48px' }}
                                                 >
                                                     <option value="false">No GST</option>
                                                     <option value="true">With GST (18%)</option>
@@ -257,10 +278,10 @@ export default function OrderEntry({ editingOrder, onOrderSaved, onToast }) {
                                         </div>
 
                                         {/* Subtle Calculation Readout (Removed old bulky UI) */}
-                                        <div style={{ background: 'rgba(16, 185, 129, 0.05)', padding: '15px', borderRadius: '8px', border: '1px solid rgba(16, 185, 129, 0.2)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+                                        <div style={{ background: 'rgba(16, 185, 129, 0.05)', padding: '20px', borderRadius: '12px', border: '1px solid rgba(16, 185, 129, 0.2)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px' }}>
                                             <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                                <span style={{ fontSize: '0.85rem', color: 'var(--saas-text-muted)' }}>Calculation Preview</span>
-                                                <span style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--saas-text)' }}>
+                                                <span style={{ fontSize: '0.85rem', color: 'var(--saas-text-muted)', marginBottom: '4px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Item Total</span>
+                                                <span style={{ fontSize: '1.2rem', fontWeight: 600, color: 'var(--saas-text)', opacity: 0.8 }}>
                                                     {prod.pricingType === 'per_piece' && prod.pricePerPiece 
                                                         ? `${prod.pricePerPiece} × ${prod.quantity} =`
                                                         : prod.pricingType === 'per_kg' && prod.pricePerKg && prod.weightPerItem
@@ -268,11 +289,11 @@ export default function OrderEntry({ editingOrder, onOrderSaved, onToast }) {
                                                         : 'Enter details...'}
                                                 </span>
                                             </div>
-                                            <h2 style={{ margin: 0, color: 'var(--saas-success)' }}>₹{(prod.totalPrice || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</h2>
+                                            <h2 style={{ margin: 0, color: 'var(--saas-success)', fontSize: '1.8rem' }}>₹{(prod.totalPrice || 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}</h2>
                                         </div>
 
-                                        <button type="button" className="btn btn-primary w-100" onClick={() => saveAndAddNext(idx)} style={{ padding: '12px', fontSize: '1.1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', fontWeight: 600 }}>
-                                            <i className="ri-check-line" /> Save Item & Next
+                                        <button type="button" className="btn btn-primary w-100" onClick={() => saveAndAddNext(idx)} style={{ padding: '16px', fontSize: '1.1rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px', fontWeight: 600, borderRadius: '12px' }}>
+                                            <i className="ri-check-double-line" style={{ fontSize: '1.2rem' }} /> Save Item & Summary
                                         </button>
                                     </div>
                                 )}
@@ -280,31 +301,31 @@ export default function OrderEntry({ editingOrder, onOrderSaved, onToast }) {
                         ))}
                     </div>
 
-                    <button type="button" className="btn btn-secondary w-100" style={{ marginBottom: '2rem', border: '2px dashed var(--saas-border)', background: 'transparent', color: 'var(--saas-text-muted)', padding: '12px', borderRadius: '12px' }} onClick={addProductLine}>
-                        <i className="ri-add-line" /> Add Another Product
+                    <button type="button" className="btn btn-secondary w-100" style={{ marginBottom: '32px', border: '2px dashed var(--saas-border)', background: 'transparent', color: 'var(--saas-text-muted)', padding: '16px', borderRadius: '12px', fontSize: '1.05rem', fontWeight: 600 }} onClick={addProductLine}>
+                        <i className="ri-add-circle-line" style={{ fontSize: '1.2rem' }} /> Add Another Product
                     </button>
 
-                    <div className="card" style={{ display: 'flex', gap: '15px', flexWrap: 'wrap', marginBottom: '80px', padding: '20px' }}>
-                        <div className="form-group" style={{ flex: 1 }}>
-                            <label><i className="ri-calendar-event-line" /> Order Date</label>
+                    <div className="card" style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginBottom: '100px', padding: '24px', borderRadius: '16px' }}>
+                        <div className="form-group" style={{ flex: '1 1 200px' }}>
+                            <label><i className="ri-calendar-event-line" style={{ marginRight: '6px' }}/> Order Date</label>
                             <input type="date" value={orderDate} onChange={(e) => setOrderDate(e.target.value)} required />
                         </div>
-                        <div className="form-group" style={{ flex: 1 }}>
-                            <label><i className="ri-calendar-schedule-line" /> Due Date</label>
+                        <div className="form-group" style={{ flex: '1 1 200px' }}>
+                            <label><i className="ri-calendar-schedule-line" style={{ marginRight: '6px' }}/> Due Date</label>
                             <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} required />
                         </div>
                     </div>
 
-                    <div className="sticky-total">
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div>
-                                <span style={{ fontSize: '0.9rem', color: 'var(--saas-text-muted)', fontWeight: '500' }}>Final Grand Total</span>
-                                <h3 style={{ margin: 0, color: 'var(--saas-success)', fontSize: '1.5rem', fontWeight: 800 }}>
+                    <div className="sticky-total" style={{ borderTop: '1px solid var(--saas-border)', padding: '16px 20px', background: 'var(--saas-card)', borderRadius: '16px 16px 0 0', boxShadow: '0 -10px 30px rgba(0,0,0,0.5)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1200px', margin: '0 auto' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                <span style={{ fontSize: '0.85rem', color: 'var(--saas-text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Grand Total</span>
+                                <h3 style={{ margin: 0, color: 'var(--saas-success)', fontSize: '1.8rem', fontWeight: 800 }}>
                                     ₹{products.reduce((acc, p) => acc + (p.totalPrice || p.finalPrice || 0), 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}
                                 </h3>
                             </div>
-                            <button type="submit" className="btn btn-primary" disabled={submitting} style={{ padding: '0.9rem 2.5rem', fontSize: '1.1rem', borderRadius: '12px', fontWeight: 700 }}>
-                                {editId ? <><i className="ri-save-line" /> Update</> : <><i className="ri-rocket-line" /> Submit Order</>}
+                            <button type="submit" className="btn btn-primary" disabled={submitting} style={{ padding: '16px 32px', fontSize: '1.15rem', borderRadius: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                {editId ? <><i className="ri-save-3-line" /> Update</> : <><i className="ri-rocket-2-line" /> Submit Order</>}
                             </button>
                         </div>
                     </div>

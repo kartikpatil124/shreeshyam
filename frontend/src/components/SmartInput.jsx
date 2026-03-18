@@ -45,14 +45,19 @@ export default function SmartInput({ value, onChange, label, suggestions = [], p
     };
 
     return (
-        <div className="form-group smart-input-group" ref={wrapperRef} style={{ position: 'relative' }}>
-            <label>{icon && <i className={icon} style={{ marginRight: '6px' }} />} {label}</label>
+        <div className="form-group smart-input-group" ref={wrapperRef} style={{ position: 'relative', marginBottom: '16px' }}>
+            {label && (
+                <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', fontWeight: 600, color: 'var(--saas-text-muted)', marginBottom: '8px' }}>
+                    {icon && <i className={icon} style={{ color: 'var(--saas-primary)', fontSize: '1.1rem' }} />} 
+                    {label}
+                </label>
+            )}
             <div className="input-wrapper" style={{ position: 'relative' }}>
-                <i className="ri-search-line" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--saas-text-muted)' }} />
+                <i className="ri-search-line" style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', color: 'var(--saas-text-muted)', fontSize: '1.2rem', pointerEvents: 'none' }} />
                 <input
                     ref={inputRef}
                     type="text"
-                    value={value}
+                    value={value || ''}
                     onChange={(e) => {
                         onChange(e.target.value);
                         setIsOpen(true);
@@ -62,23 +67,29 @@ export default function SmartInput({ value, onChange, label, suggestions = [], p
                     onKeyDown={handleKeyDown}
                     required={required}
                     placeholder={placeholder || `Search ${label}...`}
-                    style={{ paddingLeft: '38px', transition: 'all 0.2s', width: '100%' }}
+                    style={{ 
+                        paddingLeft: '44px', 
+                        paddingRight: '16px',
+                        transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)', 
+                        width: '100%',
+                        height: '48px',
+                        borderRadius: '12px'
+                    }}
                     autoComplete="off"
                 />
             </div>
 
             {isOpen && filtered.length > 0 && (
                 <div className="smart-dropdown" style={{
-                    position: 'absolute', top: '100%', left: 0, right: 0,
-                    background: 'var(--saas-card)',
-                    border: '1px solid var(--saas-border)',
-                    borderRadius: '8px',
-                    boxShadow: 'var(--saas-shadow-lg)',
-                    marginTop: '4px',
-                    maxHeight: '200px',
+                    position: 'absolute', top: 'calc(100% + 8px)', left: 0, right: 0,
+                    background: '#ffffff',
+                    border: '1px solid #e4e4e7',
+                    borderRadius: '12px',
+                    boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
+                    maxHeight: '220px',
                     overflowY: 'auto',
                     zIndex: 2000,
-                    animation: 'fadeInSlideDown 0.2s ease-out'
+                    animation: 'slideDown 0.2s cubic-bezier(0.4, 0, 0.2, 1)'
                 }}>
                     {filtered.map((item, idx) => (
                         <div
@@ -90,16 +101,19 @@ export default function SmartInput({ value, onChange, label, suggestions = [], p
                             }}
                             onMouseEnter={() => setActiveIndex(idx)}
                             style={{
-                                padding: '12px 16px',
+                                padding: '14px 16px',
                                 cursor: 'pointer',
-                                color: 'var(--saas-text)',
-                                borderBottom: idx < filtered.length - 1 ? '1px solid var(--saas-border)' : 'none',
-                                background: activeIndex === idx ? 'var(--saas-bg)' : 'transparent',
-                                display: 'flex', flexDirection: 'column'
+                                color: '#18181b',
+                                borderBottom: idx < filtered.length - 1 ? '1px solid #f4f4f5' : 'none',
+                                background: activeIndex === idx ? '#f4f4f5' : 'transparent',
+                                display: 'flex', flexDirection: 'column',
+                                transition: 'background 0.15s ease'
                             }}
                         >
-                            <span style={{ fontWeight: 600 }}>{item}</span>
-                            <span style={{ fontSize: '0.75rem', color: 'var(--saas-text-muted)', marginTop: '2px' }}>Press Enter to select</span>
+                            <span style={{ fontWeight: 700, fontSize: '0.95rem' }}>{item}</span>
+                            <span style={{ fontSize: '0.75rem', color: '#71717a', marginTop: '4px', fontWeight: 500 }}>
+                                {label ? `${label.replace(' (Opt)', '')} Suggestion` : 'Suggestion'}
+                            </span>
                         </div>
                     ))}
                 </div>

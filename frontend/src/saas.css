@@ -12,13 +12,24 @@
   --saas-danger: #ef4444;
   --saas-warning: #f59e0b;
   --saas-font: 'Inter', sans-serif;
-  --saas-shadow: 0 4px 10px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
-  --saas-shadow-lg: 0 10px 20px -3px rgba(0, 0, 0, 0.6), 0 4px 6px -2px rgba(0, 0, 0, 0.4);
+  --saas-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.5);
+  --saas-shadow-lg: 0 10px 30px -3px rgba(0, 0, 0, 0.6);
+  --saas-glow: 0 0 0 4px rgba(99, 102, 241, 0.2);
 
   font-family: var(--saas-font) !important;
   background-color: var(--saas-bg) !important;
   color: var(--saas-text) !important;
   min-height: 100vh;
+}
+
+/* Animations */
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* Base Overrides */
@@ -64,12 +75,13 @@
 /* Cards */
 .saas-dashboard .card {
   background: var(--saas-card) !important;
-  border: 1px solid var(--saas-border) !important;
-  border-radius: 12px !important;
+  border: 1px solid rgba(255,255,255,0.05) !important;
+  border-radius: 16px !important;
   box-shadow: var(--saas-shadow) !important;
-  padding: 20px !important;
-  margin-bottom: 20px !important;
+  padding: 24px !important;
+  margin-bottom: 24px !important;
   color: var(--saas-text) !important;
+  position: relative;
 }
 
 /* Top Navbar Stats / Dashboard Cards */
@@ -89,30 +101,34 @@
 /* Typography */
 .saas-dashboard h2, .saas-dashboard h3, .saas-dashboard h4, .saas-dashboard h5 {
   color: var(--saas-text) !important;
-  font-weight: 600 !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em;
 }
 .saas-dashboard label {
   color: var(--saas-text-muted) !important;
   font-weight: 500 !important;
-  font-size: 0.9rem !important;
-  margin-bottom: 6px !important;
-  display: block;
+  font-size: 0.85rem !important;
+  margin-bottom: 8px !important;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 /* Inputs */
 .saas-dashboard input, .saas-dashboard select {
   background: var(--saas-bg) !important;
-  border: 1px solid var(--saas-border) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
   color: var(--saas-text) !important;
-  border-radius: 8px !important;
-  padding: 12px 16px !important;
+  border-radius: 12px !important;
+  padding: 14px 16px !important;
   font-size: 1rem !important;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   width: 100%;
 }
 .saas-dashboard input:focus, .saas-dashboard select:focus {
   border-color: var(--saas-primary) !important;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1) !important;
+  box-shadow: var(--saas-glow) !important;
+  background: var(--saas-card) !important;
   outline: none;
 }
 .saas-dashboard input:read-only {
@@ -123,26 +139,40 @@
 }
 
 /* Buttons */
-.saas-dashboard .btn-primary {
-  background: linear-gradient(135deg, var(--saas-primary), #6366f1) !important;
-  color: #fff !important;
-  border-radius: 8px !important;
-  font-weight: 500 !important;
-  box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.4) !important;
+.saas-dashboard .btn {
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+  padding: 14px 24px !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  cursor: pointer;
   border: none !important;
 }
+.saas-dashboard .btn:active {
+  transform: scale(0.96) !important;
+}
+
+.saas-dashboard .btn-primary {
+  background: linear-gradient(135deg, var(--saas-primary), #4f46e5) !important;
+  color: #fff !important;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3) !important;
+}
 .saas-dashboard .btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 8px -1px rgba(79, 70, 229, 0.5) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4) !important;
 }
 .saas-dashboard .btn-secondary {
-  background: #fff !important;
-  color: var(--saas-text) !important;
+  background: transparent !important;
+  color: var(--saas-text-muted) !important;
   border: 1px solid var(--saas-border) !important;
-  border-radius: 8px !important;
 }
 .saas-dashboard .btn-secondary:hover {
   background: var(--saas-bg) !important;
+  color: var(--saas-text) !important;
+  border-color: var(--saas-text-muted) !important;
 }
 
 /* Toggle Buttons */
@@ -208,6 +238,36 @@
   /* Hide sidebar and top-nav hamburger on mobile */
   .saas-dashboard .sidebar, .saas-dashboard .sidebar-overlay, .saas-dashboard .hamburger-dashboard {
     display: none !important;
+  }
+  
+  /* Mobile Header */
+  .saas-dashboard .mobile-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 16px;
+    background: rgba(24, 24, 27, 0.85);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    border-bottom: 1px solid var(--saas-border);
+  }
+  .saas-dashboard .mobile-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+  .saas-dashboard .mobile-header .back-btn {
+    background: transparent;
+    border: none;
+    color: var(--saas-text);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
   
   /* Bottom Navigation */
