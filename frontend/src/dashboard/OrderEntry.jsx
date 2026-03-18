@@ -22,7 +22,18 @@ export default function OrderEntry({ editingOrder, onOrderSaved, onToast }) {
     const formRef = useRef(null);
 
     function createEmptyProduct() {
-        return { productName: '', productSize: '', price: 0, quantity: 1, priceType: 'pieces', gst: false, finalPrice: 0, description: '' };
+        return { 
+            productName: '', 
+            productSize: '', 
+            pricingType: 'per_piece', 
+            pricePerPiece: '',
+            pricePerKg: '',
+            weightPerItem: '',
+            quantity: 1, 
+            gst: false, 
+            totalPrice: 0, 
+            description: '' 
+        };
     }
 
     // Load suggestions
@@ -56,10 +67,19 @@ export default function OrderEntry({ editingOrder, onOrderSaved, onToast }) {
     const updateProduct = (index, field, value) => {
         const updated = [...products];
         updated[index] = { ...updated[index], [field]: value };
-        // Recalc final price
+        
+        // Recalc total price
         const p = updated[index];
-        const base = (Number(p.price) || 0) * (Number(p.quantity) || 0);
-        updated[index].finalPrice = p.gst ? +(base * 1.18).toFixed(2) : +base.toFixed(2);
+        let base = 0;
+        const qty = Number(p.quantity) || 0;
+        
+        if (p.pricingType === 'per_piece') {
+            base = (Number(p.pricePerPiece) || 0) * qty;
+        } else {
+            base = (Number(p.pricePerKg) || 0) * (Number(p.weightPerItem) || 0) * qty;
+        }
+        
+        updated[index].totalPrice = p.gst ? +(base * 1.18).toFixed(2) : +base.toFixed(2);
         setProducts(updated);
     };
 
@@ -78,7 +98,7 @@ export default function OrderEntry({ editingOrder, onOrderSaved, onToast }) {
             onToast('Please add at least one product', 'danger');
             return;
         }
-        const totalAmount = validProducts.reduce((sum, p) => sum + (p.finalPrice || 0), 0);
+        const totalAmount = validProducts.reduce((sum, p) => sum + (p.totalPrice || p.finalPrice || 0), 0);
         const payload = { partyName, products: validProducts, totalAmount, orderDate, dueDate };
 
         setSubmitting(true);
@@ -157,23 +177,38 @@ export default function OrderEntry({ editingOrder, onOrderSaved, onToast }) {
                             <div className="form-group"><label>Product Size (Optional)</label><input type="text" value={prod.productSize} onChange={(e) => updateProduct(idx, 'productSize', e.target.value)} /></div>
                             <div className="form-group form-group-row" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                                 <div style={{ flex: 1, minWidth: '120px' }}>
-                                    <label>Unit</label>
+                                    <label>Pricing Type</label>
                                     <select
-                                        value={prod.priceType || 'pieces'}
-                                        onChange={(e) => updateProduct(idx, 'priceType', e.target.value)}
+                                        value={prod.pricingType || 'per_piece'}
+                                        onChange={(e) => updateProduct(idx, 'pricingType', e.target.value)}
                                         style={{ padding: '0.85rem 1rem', background: 'rgba(0,0,0,0.4)', border: '1px solid var(--border)', borderRadius: '8px', color: 'var(--text-main)', width: '100%' }}
                                     >
-                                        <option value="pieces">Per Piece</option>
-                                        <option value="kg">Per Kg</option>
+                                        <option value="per_piece">Per Piece</option>
+                                        <option value="per_kg">Per KG</option>
                                     </select>
                                 </div>
-                                <div style={{ flex: 1, minWidth: '120px' }}>
-                                    <label>Price</label>
-                                    <input type="number" value={prod.price} onChange={(e) => updateProduct(idx, 'price', e.target.value)} required />
-                                </div>
+                                
+                                {prod.pricingType === 'per_piece' ? (
+                                    <div style={{ flex: 1, minWidth: '120px' }}>
+                                        <label>Price Per Piece</label>
+                                        <input type="number" step="any" min="0" value={prod.pricePerPiece} onChange={(e) => updateProduct(idx, 'pricePerPiece', e.target.value)} required={prod.pricingType === 'per_piece'} />
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div style={{ flex: 1, minWidth: '130px' }}>
+                                            <label>Price Per KG</label>
+                                            <input type="number" step="any" min="0" value={prod.pricePerKg} onChange={(e) => updateProduct(idx, 'pricePerKg', e.target.value)} required={prod.pricingType === 'per_kg'} />
+                                        </div>
+                                        <div style={{ flex: 1, minWidth: '130px' }}>
+                                            <label>Weight / Item (KG)</label>
+                                            <input type="number" step="any" min="0" value={prod.weightPerItem} onChange={(e) => updateProduct(idx, 'weightPerItem', e.target.value)} required={prod.pricingType === 'per_kg'} />
+                                        </div>
+                                    </>
+                                )}
+
                                 <div style={{ flex: 1, minWidth: '120px' }}>
                                     <label>Quantity</label>
-                                    <input type="number" value={prod.quantity} onChange={(e) => updateProduct(idx, 'quantity', e.target.value)} required />
+                                    <input type="number" step="any" min="1" value={prod.quantity} onChange={(e) => updateProduct(idx, 'quantity', e.target.value)} required />
                                 </div>
                                 <div style={{ flex: 1, minWidth: '120px' }}>
                                     <label>Tax</label>
@@ -188,8 +223,19 @@ export default function OrderEntry({ editingOrder, onOrderSaved, onToast }) {
                                 </div>
                             </div>
                             <div className="form-group">
-                                <label>Final Price</label>
-                                <input type="text" readOnly value={prod.finalPrice.toFixed(2)} style={{ background: 'rgba(245,158,11,0.1)', fontWeight: 'bold', color: 'var(--primary)', borderColor: 'rgba(245,158,11,0.3)' }} />
+                                <label>
+                                    Auto Calculated Total
+                                    {prod.pricingType === 'per_piece' && prod.pricePerPiece ? (
+                                        <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginLeft: '10px', fontWeight: 'normal' }}>
+                                            ({prod.pricePerPiece} × {prod.quantity} = ₹{prod.totalPrice || prod.finalPrice || 0})
+                                        </span>
+                                    ) : prod.pricingType === 'per_kg' && prod.pricePerKg && prod.weightPerItem ? (
+                                        <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', marginLeft: '10px', fontWeight: 'normal' }}>
+                                            ({prod.pricePerKg} × {prod.weightPerItem} × {prod.quantity} = ₹{prod.totalPrice || prod.finalPrice || 0})
+                                        </span>
+                                    ) : null}
+                                </label>
+                                <input type="text" readOnly value={`₹${(prod.totalPrice || prod.finalPrice || 0).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`} style={{ background: 'rgba(245,158,11,0.1)', fontWeight: 'bold', color: 'var(--primary)', borderColor: 'rgba(245,158,11,0.3)' }} />
                             </div>
                             <div className="form-group"><label>Description (Optional)</label><input type="text" value={prod.description} onChange={(e) => updateProduct(idx, 'description', e.target.value)} /></div>
                         </div>

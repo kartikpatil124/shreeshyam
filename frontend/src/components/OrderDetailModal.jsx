@@ -34,17 +34,25 @@ export default function OrderDetailModal({ order, onClose, onComplete, onEdit, o
                     <table>
                         <thead>
                             <tr>
-                                <th>Product</th><th>Size</th><th>Qty</th><th>Price</th><th>Total</th>
+                                <th>Product</th><th>Size/Weight</th><th>Qty</th><th>Price</th><th>Total</th>
                             </tr>
                         </thead>
                         <tbody>
                             {order.products.map((p, i) => (
                                 <tr key={i}>
-                                    <td data-label="Product">{p.productName}</td>
-                                    <td data-label="Size">{p.productSize || '-'}</td>
+                                    <td data-label="Product">
+                                        {p.productName}<br/>
+                                        <small style={{color: 'var(--text-muted)'}}>
+                                            {p.pricingType === 'per_piece' ? 'Per Piece' : 'Per KG'}
+                                        </small>
+                                    </td>
+                                    <td data-label="Size/Weight">
+                                        {p.productSize || '-'}
+                                        {p.pricingType === 'per_kg' && p.weightPerItem ? ` / ${p.weightPerItem}kg` : ''}
+                                    </td>
                                     <td data-label="Qty">{p.quantity}</td>
-                                    <td data-label="Price">₹{p.price}</td>
-                                    <td data-label="Total" style={{ color: 'var(--primary)', fontWeight: 'bold' }}>₹{p.finalPrice}</td>
+                                    <td data-label="Price">₹{p.pricingType === 'per_piece' ? p.pricePerPiece : p.pricePerKg}</td>
+                                    <td data-label="Total" style={{ color: 'var(--primary)', fontWeight: 'bold' }}>₹{p.totalPrice || p.finalPrice}</td>
                                 </tr>
                             ))}
                         </tbody>

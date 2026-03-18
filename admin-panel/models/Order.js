@@ -3,11 +3,13 @@ const mongoose = require('mongoose');
 const orderItemSchema = new mongoose.Schema({
     productName: { type: String, required: true },
     productSize: { type: String },
-    price: { type: Number, required: true },
+    pricingType: { type: String, enum: ['per_piece', 'per_kg'], default: 'per_piece' },
+    pricePerPiece: { type: Number },
+    pricePerKg: { type: Number },
+    weightPerItem: { type: Number },
     quantity: { type: Number, required: true, default: 1 },
-    priceType: { type: String, enum: ['pieces', 'kg'], default: 'pieces' },
     gst: { type: Boolean, default: false },
-    finalPrice: { type: Number, required: true },
+    totalPrice: { type: Number, required: true },
     description: { type: String }
 });
 
