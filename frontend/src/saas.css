@@ -204,6 +204,7 @@
 }
 
 /* Product Line */
+/* Product Line */
 .saas-dashboard .product-line {
   background: var(--saas-card) !important;
   border: 1px solid var(--saas-border) !important;
@@ -212,6 +213,11 @@
 .saas-dashboard .product-line h5 {
   border-bottom: 1px solid var(--saas-border) !important;
   color: var(--saas-text) !important;
+}
+
+/* Base styles for bottom nav (hidden on desktop) */
+.saas-dashboard .bottom-nav, .saas-dashboard .fab-mobile {
+  display: none;
 }
 
 /* Sticky Total Mobile */
@@ -304,6 +310,29 @@
   .saas-dashboard .bottom-nav-item.active i {
     color: var(--saas-primary);
   }
+
+  .saas-dashboard .fab-nav-item {
+    position: relative;
+    top: -24px;
+  }
+  .saas-dashboard .fab-nav-item .fab-inner {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, var(--saas-primary), #4f46e5);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4);
+    transition: transform 0.2s;
+  }
+  .saas-dashboard .fab-nav-item:active .fab-inner {
+    transform: scale(0.9);
+  }
+  .saas-dashboard .fab-nav-item .fab-inner i {
+    font-size: 2rem !important;
+    color: #fff !important;
+  }
   
   /* FAB Mobile */
   .saas-dashboard .fab-mobile {
@@ -330,17 +359,51 @@
   }
 }
 
-/* Base styles for bottom nav (hidden on desktop) */
-.saas-dashboard .bottom-nav, .saas-dashboard .fab-mobile {
-  display: none;
-}
-
 @media (max-width: 768px) {
   .saas-dashboard .bottom-nav, .saas-dashboard .fab-mobile {
     display: flex;
   }
   
-  /* Hide top desktop nav links on mobile to make room */
+  /* Mobile Table to Cards */
+  .saas-dashboard .responsive-table thead {
+    display: none;
+  }
+  .saas-dashboard .responsive-table, .saas-dashboard .responsive-table tbody, .saas-dashboard .responsive-table tr, .saas-dashboard .responsive-table td {
+    display: block;
+    width: 100%;
+  }
+  .saas-dashboard .responsive-table tr {
+    margin-bottom: 20px;
+    border: 1px solid var(--saas-border);
+    border-radius: 16px;
+    background: var(--saas-card);
+    padding: 16px;
+  }
+  .saas-dashboard .responsive-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0 !important;
+    border-bottom: 1px dashed rgba(255,255,255,0.1);
+    text-align: right;
+  }
+  .saas-dashboard .responsive-table td:last-child {
+    border-bottom: none;
+  }
+  .saas-dashboard .responsive-table td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--saas-text-muted);
+    font-size: 0.85rem;
+    text-align: left;
+    text-transform: uppercase;
+  }
+  .saas-dashboard .table-responsive.card-view {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+  }
+
   .saas-dashboard .global-navbar .nav-links {
     display: none !important;
   }

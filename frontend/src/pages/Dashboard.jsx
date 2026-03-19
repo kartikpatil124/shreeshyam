@@ -117,7 +117,7 @@ export default function Dashboard() {
 
                     {/* Content Sections */}
                     {activeSection === 'order-entry' && (
-                        <OrderEntry editingOrder={editingOrder} onOrderSaved={handleOrderSaved} onToast={addToast} />
+                        <OrderEntry editingOrder={editingOrder} onOrderSaved={handleOrderSaved} onToast={addToast} onBack={() => handleNavigate('pending-orders')} />
                     )}
                     {activeSection === 'pending-orders' && (
                         <PendingOrders key={refreshKey} onEdit={handleEdit} onToast={addToast} onNotification={addNotification} />
@@ -134,26 +134,20 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            {/* Mobile Floating Action Button (Opens Order Entry) */}
-            {activeSection !== 'order-entry' && (
-                <button className="fab-mobile" onClick={() => handleNavigate('order-entry')} aria-label="Add Order">
-                    <i className="ri-add-line" />
-                </button>
-            )}
-
             {/* Mobile Bottom Navigation (Visible only on mobile) */}
             <div className="bottom-nav">
                 <button className={`bottom-nav-item ${activeSection === 'order-statistic' ? 'active' : ''}`} onClick={() => handleNavigate('order-statistic')}>
                     <i className="ri-dashboard-line" />
                     <span>Home</span>
                 </button>
-                <button className={`bottom-nav-item ${activeSection === 'pending-orders' ? 'active' : ''}`} onClick={() => handleNavigate('pending-orders')}>
-                    <i className="ri-time-line" />
-                    <span>Pending</span>
+                <button className={`bottom-nav-item ${['pending-orders', 'completed-orders'].includes(activeSection) ? 'active' : ''}`} onClick={() => handleNavigate('pending-orders')}>
+                    <i className="ri-list-check-2" />
+                    <span>Orders</span>
                 </button>
-                <button className={`bottom-nav-item ${activeSection === 'completed-orders' ? 'active' : ''}`} onClick={() => handleNavigate('completed-orders')}>
-                    <i className="ri-checkbox-circle-line" />
-                    <span>Done</span>
+                <button className={`bottom-nav-item fab-nav-item ${activeSection === 'order-entry' ? 'active' : ''}`} onClick={() => handleNavigate('order-entry')}>
+                    <div className="fab-inner">
+                        <i className="ri-add-line" />
+                    </div>
                 </button>
                 <button className={`bottom-nav-item ${activeSection === 'change-email' ? 'active' : ''}`} onClick={() => handleNavigate('change-email')}>
                     <i className="ri-settings-4-line" />

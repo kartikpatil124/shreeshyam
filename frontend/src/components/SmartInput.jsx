@@ -68,12 +68,13 @@ export default function SmartInput({ value, onChange, label, suggestions = [], p
                     required={required}
                     placeholder={placeholder || `Search ${label}...`}
                     style={{ 
-                        paddingLeft: '44px', 
+                        paddingLeft: '48px', 
                         paddingRight: '16px',
                         transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)', 
                         width: '100%',
                         height: '48px',
-                        borderRadius: '12px'
+                        borderRadius: '12px',
+                        boxSizing: 'border-box'
                     }}
                     autoComplete="off"
                 />

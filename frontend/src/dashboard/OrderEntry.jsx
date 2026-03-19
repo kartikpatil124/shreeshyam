@@ -6,7 +6,7 @@ import {
     addProductSuggestion, addSizeSuggestion, addPartySuggestion
 } from '../services/api';
 
-export default function OrderEntry({ editingOrder, onOrderSaved, onToast }) {
+export default function OrderEntry({ editingOrder, onOrderSaved, onToast, onBack }) {
     const [partyName, setPartyName] = useState('');
     const [orderDate, setOrderDate] = useState('');
     const [dueDate, setDueDate] = useState('');
@@ -144,7 +144,7 @@ export default function OrderEntry({ editingOrder, onOrderSaved, onToast }) {
         <div className="section-container active" ref={formRef} style={{ padding: '0 0 40px 0' }}>
             {/* Sticky Mobile Header */}
             <div className="mobile-header d-md-none" style={{ display: 'flex', alignItems: 'center', gap: '15px', padding: '16px 24px', background: 'rgba(24, 24, 27, 0.85)', backdropFilter: 'blur(12px)', position: 'sticky', top: 0, zIndex: 100, borderBottom: '1px solid var(--saas-border)', margin: '0 -20px 24px -20px' }}>
-                <button type="button" onClick={() => window.dispatchEvent(new Event('popstate'))} style={{ background: 'transparent', border: 'none', color: 'var(--saas-text)', fontSize: '1.5rem', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center' }}>
+                <button type="button" onClick={() => { if (onBack) onBack(); else window.dispatchEvent(new Event('popstate')); }} style={{ background: 'transparent', border: 'none', color: 'var(--saas-text)', fontSize: '1.5rem', cursor: 'pointer', padding: '4px', display: 'flex', alignItems: 'center' }}>
                     <i className="ri-arrow-left-line" />
                 </button>
                 <h2 style={{ margin: 0, fontSize: '1.25rem', fontWeight: 700 }}>{editId ? 'Edit Order' : 'Order Workflow'}</h2>
@@ -305,29 +305,27 @@ export default function OrderEntry({ editingOrder, onOrderSaved, onToast }) {
                         <i className="ri-add-circle-line" style={{ fontSize: '1.2rem' }} /> Add Another Product
                     </button>
 
-                    <div className="card" style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginBottom: '100px', padding: '24px', borderRadius: '16px' }}>
-                        <div className="form-group" style={{ flex: '1 1 200px' }}>
+                    <div className="card" style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', marginBottom: '24px', padding: '24px', borderRadius: '16px' }}>
+                        <div className="form-group" style={{ flex: '1 1 100%' }}>
                             <label><i className="ri-calendar-event-line" style={{ marginRight: '6px' }}/> Order Date</label>
                             <input type="date" value={orderDate} onChange={(e) => setOrderDate(e.target.value)} required />
                         </div>
-                        <div className="form-group" style={{ flex: '1 1 200px' }}>
+                        <div className="form-group" style={{ flex: '1 1 100%' }}>
                             <label><i className="ri-calendar-schedule-line" style={{ marginRight: '6px' }}/> Due Date</label>
                             <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} required />
                         </div>
                     </div>
 
-                    <div className="sticky-total" style={{ borderTop: '1px solid var(--saas-border)', padding: '16px 20px', background: 'var(--saas-card)', borderRadius: '16px 16px 0 0', boxShadow: '0 -10px 30px rgba(0,0,0,0.5)' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1200px', margin: '0 auto' }}>
-                            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                <span style={{ fontSize: '0.85rem', color: 'var(--saas-text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Grand Total</span>
-                                <h3 style={{ margin: 0, color: 'var(--saas-success)', fontSize: '1.8rem', fontWeight: 800 }}>
-                                    ₹{products.reduce((acc, p) => acc + (p.totalPrice || p.finalPrice || 0), 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}
-                                </h3>
-                            </div>
-                            <button type="submit" className="btn btn-primary" disabled={submitting} style={{ padding: '16px 32px', fontSize: '1.15rem', borderRadius: '12px', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                {editId ? <><i className="ri-save-3-line" /> Update</> : <><i className="ri-rocket-2-line" /> Submit Order</>}
-                            </button>
+                    <div style={{ padding: '24px', background: 'var(--saas-card)', borderRadius: '16px', border: '1px solid var(--saas-border)', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontSize: '1rem', color: 'var(--saas-text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Final Grand Total</span>
+                            <h3 style={{ margin: 0, color: 'var(--saas-success)', fontSize: '2rem', fontWeight: 800 }}>
+                                ₹{products.reduce((acc, p) => acc + (p.totalPrice || p.finalPrice || 0), 0).toLocaleString('en-IN', {minimumFractionDigits: 2})}
+                            </h3>
                         </div>
+                        <button type="submit" className="btn btn-primary" disabled={submitting} style={{ padding: '16px', fontSize: '1.15rem', borderRadius: '12px', fontWeight: 700, width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px', height: '56px' }}>
+                            {editId ? <><i className="ri-save-3-line" /> Update Order</> : <><i className="ri-rocket-2-line" /> Submit Order</>}
+                        </button>
                     </div>
                 </form>
             </div>
